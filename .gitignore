@@ -1,0 +1,25 @@
+# Data directories (raw data is ~100MB, don't track)
+data/raw/
+data/validated/
+data/modeled/output/
+data/modeled/intermediate/
+
+# Logs
+logs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

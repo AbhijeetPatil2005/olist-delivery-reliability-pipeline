@@ -1,0 +1,16 @@
+# FDE Data Foundations — Olist Delivery Reliability Pipeline
+# Core dependencies
+pandas>=2.0.0
+requests>=2.31.0
+
+# For date handling (holiday proximity calculations)
+python-dateutil>=2.8.0
+
+# For CLI (logging, exit codes)
+tqdm>=4.65.0
+
+# For checksum verification
+hashlib (standard library)
+
+# Testing (optional, for validation)
+pytest>=7.0.0
