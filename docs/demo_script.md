@@ -24,15 +24,15 @@
 
 [TIME] 0:36
 [SAY] I also pulled Brazilian national holidays from the Brasil API as context.
-[SHOW] Open docs/workflow_diagram.md
+[SHOW] docs/source_map.md
 
 [TIME] 0:42
 [SAY] Holidays can affect delivery expectations, so I logged proximity as context but didn't let it reclassify on-time status.
-[SHOW] docs/workflow_diagram.md - API box
+[SHOW] docs/source_map.md - API box
 
 [TIME] 0:49
 [SAY] This is a classic FDE problem: taking messy multi-source data and turning it into a trustworthy metric.
-[SHOW] docs/workflow_diagram.md
+[SHOW] docs/source_map.md
 
 [TIME] 0:55
 [SAY] Here's where I made the most important judgment call in this project.
@@ -76,19 +76,19 @@
 
 [TIME] 1:54
 [SAY] Leadership gets an honest ninety-one point eight eight percent on-time rate.
-[SHOW] data/modeled/output/metrics_evidence_table.csv - On-Time Delivery Rate row
+[SHOW] data/modeled/output/metrics_summary.md - On-Time Delivery Rate row
 
 [TIME] 2:01
 [SAY] Not a number I massaged to look better by guessing on three percent of orders.
-[SHOW] data/modeled/output/metrics_evidence_table.csv - numerator (88,612) and denominator (96,438)
+[SHOW] data/modeled/output/metrics_summary.md - numerator (88,612) and denominator (96,438)
 
 [TIME] 2:08
-[SAY] The excluded orders are logged in data/validated/orders_excluded.csv with reason codes.
-[SHOW] Open data/validated/orders_excluded.csv - show first few rows with delivery_status column
+[SAY] The excluded orders are logged in docs/known_issues.md with reason codes.
+[SHOW] docs/known_issues.md - show first few rows with delivery_status column
 
 [TIME] 2:15
 [SAY] Anyone can audit exactly what was left out and why — no silent exclusions.
-[SHOW] data/validated/orders_excluded.csv - scroll to show reason codes visible
+[SHOW] docs/known_issues.md - scroll to show reason codes visible
 
 [TIME] 2:23
 [SAY] The pipeline has four stages: Ingest, Validate, Transform, and Metrics.
@@ -124,56 +124,52 @@
 
 [TIME] 3:13
 [SAY] The evidence table shows five metrics tied to stakeholder questions.
-[SHOW] Open data/modeled/output/metrics_evidence_table.csv
+[SHOW] Open data/modeled/output/metrics_summary.md
 
 [TIME] 3:19
 [SAY] First: ninety-one point eight eight percent on-time delivery. Leadership's headline number.
-[SHOW] metrics_evidence_table.csv - On-Time Delivery Rate row
+[SHOW] metrics_summary.md - On-Time Delivery Rate row
 
 [TIME] 3:26
 [SAY] This comes from eighty-eight thousand six hundred twelve on-time orders out of ninety-six thousand four hundred thirty-eight valid orders.
-[SHOW] metrics_evidence_table.csv - numerator and denominator columns highlighted
+[SHOW] metrics_summary.md - numerator and denominator columns highlighted
 
 [TIME] 3:34
 [SAY] Second: late orders are late by an average of eight point eight seven days.
-[SHOW] metrics_evidence_table.csv - Average Delay row
+[SHOW] metrics_summary.md - Average Delay row
 
 [TIME] 3:40
 [SAY] That's seven thousand eight hundred twenty-six late orders showing systemic delay issues.
-[SHOW] metrics_evidence_table.csv - numerator showing "7,826 late orders"
+[SHOW] metrics_summary.md - numerator showing "7,826 late orders"
 
 [TIME] 3:47
 [SAY] Third: twenty-seven states analyzed, worst is Alagoas at seventy-six point one percent on-time.
 [SHOW] Open data/modeled/output/metrics_summary.md - State-by-State Performance table
 
 [TIME] 3:54
-[SAY] Only three hundred ninety-seven orders from Alagoas, but seventy-six percent on-time is a problem.
-[SHOW] metrics_summary.md - AL row highlighted
-
-[TIME] 4:01
 [SAY] Operations should investigate carrier relationships in Alagoas specifically.
 [SHOW] metrics_summary.md - state table
 
-[TIME] 4:08
+[TIME] 4:01
 [SAY] Fourth: on-time orders score four point two nine stars, late orders score two point five seven.
-[SHOW] metrics_evidence_table.csv - Review Score Correlation row
+[SHOW] metrics_summary.md - Review Score Correlation row
+
+[TIME] 4:08
+[SAY] That's a gap of one point seven three stars showing late delivery hurts satisfaction.
+[SHOW] metrics_summary.md - Delta: -1.73
 
 [TIME] 4:15
-[SAY] That's a gap of one point seven three stars showing late delivery hurts satisfaction.
-[SHOW] metrics_evidence_table.csv - Delta: -1.73
+[SAY] Customer Experience can use this to prioritize delivery improvements.
+[SHOW] metrics_summary.md - stakeholder: Customer Experience
 
 [TIME] 4:22
-[SAY] Customer Experience can use this to prioritize delivery improvements.
-[SHOW] metrics_evidence_table.csv - stakeholder: Customer Experience
-
-[TIME] 4:29
 [SAY] Fifth: delay split. Twenty-one percent of total time is before carrier handoff, seventy-nine percent in transit.
-[SHOW] metrics_evidence_table.csv - Delay Split row
+[SHOW] metrics_summary.md - Delay Split row
 
-[TIME] 4:37
+[TIME] 4:30
 [SAY] Most of the delay is the carrier's responsibility, not internal ops — so focus improvement efforts there.
-[SHOW] metrics_evidence_table.csv - notes column for Delay Split
+[SHOW] metrics_summary.md - notes column for Delay Split
 
-[TIME] 4:45
+[TIME] 4:38
 [SAY] Leadership can trust ninety-one point eight eight percent because I refused to guess on three percent of orders. An honest number is more valuable than a precise wrong one.
 [SHOW] Close all files, return to terminal or blank slide
