@@ -1,5 +1,5 @@
 # Olist Delivery Reliability — Metrics Summary
-**Generated:** 2026-09-25 09:59:01
+**Generated:** 2026-09-25 10:19:50
 ---
 ## Executive Summary
 - **Total Valid Orders Analyzed:** 96,438

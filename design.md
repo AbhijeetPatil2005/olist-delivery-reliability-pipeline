@@ -231,7 +231,7 @@
 5. **Ambiguous Delivery Timestamps (FDE Judgment Call):**
    - Orders with `delivery_status_unclear` (missing or impossible timestamps) are EXCLUDED from on-time rate calculation
    - They are counted and reported separately as "excluded_orders" with clear flag codes
-   - This is NOT silently dropped — it's visible and defensible: we refuse to guess on ~X% of orders rather than inflate/deflate the KPI with assumptions
+   - This is NOT silently dropped — it's visible and defensible: we refuse to guess on 3.02% of orders rather than inflate/deflate the KPI with assumptions
 
 6. **Demo Focus (approved):** The delivery_status_unclear handling is the primary judgment call to highlight in the 3-5 minute demo — it directly demonstrates the "don't silently fix" principle from the rubric.
 

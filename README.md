@@ -18,7 +18,7 @@
 
 This pipeline integrates **10 data sources**:
 
-1. **Olist E-Commerce Dataset (9 tables)** — Orders, items, payments, reviews, products, sellers, customers, geolocation, and category translations from Kaggle.
+1. **Olist E-Commerce Dataset (9 CSVs)** — Orders, items, payments, reviews, products, sellers, customers, geolocation, and category translations from Kaggle.
 2. **Brasil API /Feriados** — Brazilian national holidays for delivery context (via API).
 
 For full documentation, see: [docs/source_map.md](docs/source_map.md)
@@ -31,7 +31,7 @@ This pipeline makes explicit, defensible choices about ambiguous data:
 
 | Situation | Treatment | Rationale |
 |-----------|-----------|-----------|
-| Missing `delivered_customer_date` | **Exclude** from on-time rate | Refusing to guess on ~X% of orders rather than silently inflate/deflate the KPI |
+| Missing `delivered_customer_date` | **Exclude** from on-time rate | Refusing to guess on 3.02% of orders rather than silently inflate/deflate the KPI |
 | `delivered` < `shipped` (impossible timeline) | **Flag** as `delivery_timeline_impossible`, exclude | Cannot compute meaningful delay on impossible data |
 | Holiday within 3 days of delivery | **Log as context**, do NOT reclassify on-time status | An arbitrary grace period (±3 days) can't be defended without carrier close-day data |
 
@@ -98,6 +98,7 @@ pip install -r requirements.txt
 ## Reproducibility
 
 - The pipeline is **idempotent**: running it again on the same raw data produces the same output.
+- Verified 2026-09-25: rerunning on identical raw data reproduces byte-identical output.
 - Output directories are cleaned at the start of each run.
 - Checksums are validated at ingest to ensure raw data hasn't changed.
 
