@@ -1,0 +1,6 @@
+metric_name,metric_value,numerator,denominator,time_period,stakeholder,notes
+On-Time Delivery Rate,91.88%,"88,612","96,438",All-time (dataset),Leadership,Excludes orders with delivery_status_unclear (missing/invalid timestamps)
+Average Delay (Late Orders Only),8.87 days,"7,826 late orders",N/A (late orders only),All-time (dataset),Operations,Calculated as (actual_delivery - estimated_delivery) for orders where actual > estimated
+Delivery Reliability by State,27 states analyzed,0 states < 50%,27 total states,All-time (dataset),Operations,Worst state: AL (76.1%)
+Review Score Correlation with Lateness,"On-time: 4.29, Late: 2.57, Delta: -1.73",95792 orders with reviews,"N/A (comparison, not rate)",All-time (dataset),Customer Experience,Delta of -1.73 shows impact of late delivery on satisfaction
+Delay Split (Pre-Ship vs. In-Transit),"Pre-ship: 2.35d (20.9%), In-transit: 8.88d (79.1%)","Pre-ship: 95,088 orders, In-transit: 96,438 orders","N/A (time breakdown, not count)",All-time (dataset),Operations,Pre-ship: order_approved_at -> order_delivered_carrier_date (ops responsibility)
