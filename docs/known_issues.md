@@ -141,3 +141,30 @@ This document catalogs data quality issues discovered during profiling, explicit
 - **Generated:** 2026-09-24 (auto-populated from pipeline validation)
 - **Pipeline Version:** 1.0.0
 - **Data Source:** Olist Brazilian E-Commerce Dataset (Kaggle)
+---
+
+## Part 6: Verified Failure Handling
+
+### Tested Failure Scenario: Missing Required Raw File
+
+When `olist_orders_dataset.csv` was temporarily removed to test failure handling, the pipeline failed loudly and clearly:
+
+**Terminal Output:**
+```
+[X] olist_orders_dataset.csv: MISSING
+INGESTION FAILED: One or more sources incomplete or unreachable
+VALIDATION FAILED: Could not load all required tables
+[X] STAGE VALIDATE FAILED
+```
+
+**Behavior Analysis:**
+- Stage INGEST detected the missing file immediately during completeness verification
+- The error message explicitly identifies which file is missing
+- Pipeline exited with non-zero status (exit code 1)
+- No silent continuation or corrupted output produced
+- Log file records the failure with timestamp and stage
+
+**Conclusion:** The pipeline properly fails loudly when required data is missing, providing clear diagnostic output rather than crashing with an unhelpful traceback or producing garbage output.
+
+---
+**Verified:** 2026-09-25 | Test: Removed `olist_orders_dataset.csv`, ran `python run_pipeline.py`

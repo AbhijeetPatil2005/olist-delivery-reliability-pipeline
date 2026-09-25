@@ -1,139 +1,179 @@
-# Demo Script — FDE Data Foundations: Olist Delivery Reliability Pipeline
+[TIME] 0:00
+[SAY] I'm building a data pipeline for Olist, a Brazilian e-commerce company.
+[SHOW] Open README.md to Business Problem section
 
-**Duration:** 3-5 minutes
-**Format:** Walkthrough with live pipeline execution
-**Focus:** One significant FDE judgment call with defensible reasoning
+[TIME] 0:05
+[SAY] Their leadership wants to know one thing: are we delivering orders on time?
+[SHOW] README.md - Business Problem section
 
----
+[TIME] 0:10
+[SAY] The KPI is the on-time delivery rate, the percentage of orders arriving by their promised date.
+[SHOW] README.md - Stakeholder table
 
-## Demo Outline
+[TIME] 0:17
+[SAY] Olist's data is fragmented across nine separate tables in different systems.
+[SHOW] Open docs/source_map.md
 
-### 1. Context & Problem (30 seconds)
+[TIME] 0:23
+[SAY] Orders are in one system, payments in another, reviews in a third.
+[SHOW] docs/source_map.md - table list
 
-> "I'm an FDE working with Olist, a Brazilian e-commerce platform. Their leadership wants to know: **Are we delivering orders on time, and where do delays accumulate?**"
+[TIME] 0:29
+[SAY] Each table has its own timestamp fields, and they're not always consistent.
+[SHOW] docs/source_map.md - orders table detail
 
-> "This is the Delivery Reliability KPI — my pipeline transforms fragmented source data into a trustworthy on-time delivery rate."
+[TIME] 0:36
+[SAY] I also pulled Brazilian national holidays from the Brasil API as context.
+[SHOW] Open docs/workflow_diagram.md
 
-### 2. Source Systems (45 seconds)
+[TIME] 0:42
+[SAY] Holidays can affect delivery expectations, so I logged proximity as context but didn't let it reclassify on-time status.
+[SHOW] docs/workflow_diagram.md - API box
 
-> "Olist's data lives in 9 separate tables across different systems."
+[TIME] 0:49
+[SAY] This is a classic FDE problem: taking messy multi-source data and turning it into a trustworthy metric.
+[SHOW] docs/workflow_diagram.md
 
-**Show:** `docs/source_map.md`
+[TIME] 0:55
+[SAY] Here's where I made the most important judgment call in this project.
+[SHOW] Open docs/known_issues.md
 
-> "Orders are in the Order Management system. Payments are in a separate Billing system. Reviews are in a Feedback system. The key challenge is that each system has its own timestamp field — and they're not always consistent."
+[TIME] 1:00
+[SAY] About three percent of orders have missing or impossible delivery timestamps.
+[SHOW] docs/known_issues.md - Delivery Status Breakdown table
 
-**Mention:**
-- `order_purchase_timestamp` (when placed)
-- `order_approved_at` (payment approved)
-- `order_delivered_carrier_date` (carrier handoff)
-- `order_delivered_customer_date` (customer received)
-- `review_creation_date` (when reviewed)
+[TIME] 1:06
+[SAY] Specifically, two thousand nine hundred sixty-five orders have no delivery timestamp at all.
+[SHOW] docs/known_issues.md - "delivery_missing: 2,965" row
 
-### 3. THE JUDGMENT CALL — Delivery Status Unclear (90 seconds)
+[TIME] 1:13
+[SAY] Twenty-three orders show the package was delivered before it was even shipped.
+[SHOW] docs/known_issues.md - "delivery_timeline_impossible: 23" row
 
-> "Here's where I made the most important judgment call in this project."
+[TIME] 1:19
+[SAY] That's impossible — you can't deliver before you ship.
+[SHOW] docs/known_issues.md - VAL-001 description
 
-**Show:** `docs/known_issues.md` — Section "Part 5: Impact Summary"
+[TIME] 1:25
+[SAY] I had three choices for these three thousand and three problematic orders.
+[SHOW] docs/known_issues.md - Total Excluded row (3,003)
 
-> "Some orders have missing or impossible delivery timestamps. For example:
-> - 500 orders have `delivered` status but no delivery timestamp
-> - 20 orders show the package was 'delivered' BEFORE it was 'shipped'
+[TIME] 1:32
+[SAY] Choice one: assume they were all on-time and inflate the KPI.
+[SHOW] docs/known_issues.md
 
-> **The choice:** Do I guess these are on-time, assume they're late, or exclude them?"
+[TIME] 1:37
+[SAY] Choice two: assume they were all late and deflate the KPI.
+[SHOW] docs/known_issues.md
 
-**Show code:** `src/validate.py` — `delivery_status` assignment logic
+[TIME] 1:42
+[SAY] Choice three: exclude them, log exactly why, and tell leadership the truth.
+[SHOW] docs/known_issues.md
 
-> "I chose to **exclude** them. Here's my reasoning:
+[TIME] 1:48
+[SAY] I chose option three. No data, no guess.
+[SHOW] src/validate.py - delivery_status assignment logic
 
-> 1. **No data, no guess.** If the timestamp is missing, I can't verify when it was delivered.
+[TIME] 1:54
+[SAY] Leadership gets an honest ninety-one point eight eight percent on-time rate.
+[SHOW] data/modeled/output/metrics_evidence_table.csv - On-Time Delivery Rate row
 
-> 2. **This changes the denominator.** If I guessed, I'd be claiming precision I don't have.
+[TIME] 2:01
+[SAY] Not a number I massaged to look better by guessing on three percent of orders.
+[SHOW] data/modeled/output/metrics_evidence_table.csv - numerator (88,612) and denominator (96,438)
 
-> 3. **The number matters.** Out of ~99,000 orders, about 3,000 have `delivery_status_unclear`. If I silently dropped them, I'd be hiding a 3% gap. By excluding them explicitly, Leadership knows exactly what they're looking at."
+[TIME] 2:08
+[SAY] The excluded orders are logged in data/validated/orders_excluded.csv with reason codes.
+[SHOW] Open data/validated/orders_excluded.csv - show first few rows with delivery_status column
 
-**Show the impact:**
+[TIME] 2:15
+[SAY] Anyone can audit exactly what was left out and why — no silent exclusions.
+[SHOW] data/validated/orders_excluded.csv - scroll to show reason codes visible
 
-> "Before my rule: 94,000 orders included
-> After my rule: ~91,000 orders included, ~3,000 excluded
-> The on-time rate applies to that 91,000 — and that's honest."
+[TIME] 2:23
+[SAY] The pipeline has four stages: Ingest, Validate, Transform, and Metrics.
+[SHOW] Switch to terminal, open logs folder
 
-### 4. Pipeline Walkthrough (60 seconds)
+[TIME] 2:29
+[SAY] Ingest loads the CSV files and calls the Brasil API.
+[SHOW] logs/pipeline_*.log - scroll to INGEST section
 
-> "The pipeline has 4 stages."
+[TIME] 2:35
+[SAY] Validate profiles each table and applies eight validation rules.
+[SHOW] logs/pipeline_*.log - scroll to VALIDATE section
 
-**Run:** `python run_pipeline.py`
+[TIME] 2:41
+[SAY] Transform reconstructs the event sequence for each order and calculates outcomes.
+[SHOW] logs/pipeline_*.log - scroll to TRANSFORM section
 
-> "1. **INGEST** — Load Olist CSVs and fetch Brazilian holidays from Brasil API
-> 2. **VALIDATE** — Profile tables, apply 8 validation rules, flag bad records
-> 3. **TRANSFORM** — Reconstruct the event sequence per order, calculate outcomes
-> 4. **METRICS** — Compute 5 KPIs tied to stakeholder questions"
+[TIME] 2:47
+[SAY] Metrics computes the five delivery reliability KPIs.
+[SHOW] logs/pipeline_*.log - scroll to METRICS section
 
-**Show log output:**
-> "Notice the logging at each stage — rows in, rows processed, rows out."
+[TIME] 2:53
+[SAY] Each stage logs rows in, rows processed, rows out — complete audit trail.
+[SHOW] logs/pipeline_*.log - show logging pattern (timestamps, row counts)
 
-### 5. Evidence Table (30 seconds)
+[TIME] 3:00
+[SAY] The pipeline is idempotent: running it again on the same input produces the same output.
+[SHOW] logs/pipeline_*.log - bottom showing METRICS COMPLETE
 
-> "The output is an evidence table any stakeholder can read."
+[TIME] 3:06
+[SAY] The full run takes about ninety seconds end to end.
+[SHOW] Terminal showing completed pipeline log
 
-**Show:** `data/modeled/output/metrics_evidence_table.csv`
+[TIME] 3:13
+[SAY] The evidence table shows five metrics tied to stakeholder questions.
+[SHOW] Open data/modeled/output/metrics_evidence_table.csv
 
-> "Each metric shows: what it is, the numerator, the denominator, who it's for, and the decision it supports."
+[TIME] 3:19
+[SAY] First: ninety-one point eight eight percent on-time delivery. Leadership's headline number.
+[SHOW] metrics_evidence_table.csv - On-Time Delivery Rate row
 
-**Highlight:**
-> "On-Time Delivery Rate: 94.2% — for Leadership's monthly report
-> Average Delay (Late): 8.3 days — for Operations to investigate systemic issues
-> Delivery by State: Roraima at 78%, São Paulo at 97% — for Operations resource allocation"
+[TIME] 3:26
+[SAY] This comes from eighty-eight thousand six hundred twelve on-time orders out of ninety-six thousand four hundred thirty-eight valid orders.
+[SHOW] metrics_evidence_table.csv - numerator and denominator columns highlighted
 
-### 6. Closing (15 seconds)
+[TIME] 3:34
+[SAY] Second: late orders are late by an average of eight point eight seven days.
+[SHOW] metrics_evidence_table.csv - Average Delay row
 
-> "The key takeaway: I didn't silently clean the data. Every excluded order is logged, counted, and documented. Leadership gets a number they can trust — because it admits what it doesn't know."
+[TIME] 3:40
+[SAY] That's seven thousand eight hundred twenty-six late orders showing systemic delay issues.
+[SHOW] metrics_evidence_table.csv - numerator showing "7,826 late orders"
 
----
+[TIME] 3:47
+[SAY] Third: twenty-seven states analyzed, worst is Alagoas at seventy-six point one percent on-time.
+[SHOW] Open data/modeled/output/metrics_summary.md - State-by-State Performance table
 
-## Talking Points by Stakeholder
+[TIME] 3:54
+[SAY] Only three hundred ninety-seven orders from Alagoas, but seventy-six percent on-time is a problem.
+[SHOW] metrics_summary.md - AL row highlighted
 
-### For Leadership
-- "The headline on-time rate is 94.2% — and that number is honest because we excluded 3% of orders we couldn't verify."
+[TIME] 4:01
+[SAY] Operations should investigate carrier relationships in Alagoas specifically.
+[SHOW] metrics_summary.md - state table
 
-### For Operations
-- "Pre-ship lag (order to carrier handoff) averages 3.2 days, in-transit averages 5.1 days. Focus on reducing the pre-ship time first."
-- "Roraima and Amapá have the worst on-time rates — investigate carrier partnerships in those states."
+[TIME] 4:08
+[SAY] Fourth: on-time orders score four point two nine stars, late orders score two point five seven.
+[SHOW] metrics_evidence_table.csv - Review Score Correlation row
 
-### For Customer Experience
-- "Late deliveries have an average review score 0.4 points lower than on-time deliveries. Delivery reliability directly impacts CSAT."
+[TIME] 4:15
+[SAY] That's a gap of one point seven three stars showing late delivery hurts satisfaction.
+[SHOW] metrics_evidence_table.csv - Delta: -1.73
 
----
+[TIME] 4:22
+[SAY] Customer Experience can use this to prioritize delivery improvements.
+[SHOW] metrics_evidence_table.csv - stakeholder: Customer Experience
 
-## Key Lines to Remember
+[TIME] 4:29
+[SAY] Fifth: delay split. Twenty-one percent of total time is before carrier handoff, seventy-nine percent in transit.
+[SHOW] metrics_evidence_table.csv - Delay Split row
 
-| Line | Purpose |
-|------|---------|
-| "No data, no guess." | Defends excluding ambiguous records |
-| "3% excluded, not silently dropped" | Shows transparency in methodology |
-| "Honest number" | Reinforces trustworthiness |
-| "Pre-ship vs. in-transit split" | Actionable insight for Ops |
+[TIME] 4:37
+[SAY] Most of the delay is the carrier's responsibility, not internal ops — so focus improvement efforts there.
+[SHOW] metrics_evidence_table.csv - notes column for Delay Split
 
----
-
-## Demo Preparation Checklist
-
-- [ ] Olist CSV files in `data/raw/olist/`
-- [ ] Run pipeline once to generate evidence table
-- [ ] Have `docs/known_issues.md` open to show the exclusion count
-- [ ] Have `src/validate.py` open to show the logic
-- [ ] Time the demo — target 4 minutes
-
----
-
-## Technical Notes for Demo
-
-**If asked about alternative approaches:**
-- "I could have assumed missing deliveries were 'delivered on time' — but that would inflate the KPI by 3% with no basis."
-- "I could have assumed missing deliveries were 'late' — but that's equally arbitrary."
-- "Exclusion is the only approach that preserves trustworthiness."
-
-**If asked about holidays:**
-- "Holidays are logged as context but don't reclassify on-time status. An arbitrary ±3-day grace period can't be defended without carrier close-day data."
-
-**If asked about scalability:**
-- "Pandas handles ~100K rows easily. For 10x or 100x growth, we'd switch to DuckDB or Spark — but this is explainable and correct at current scale."
+[TIME] 4:45
+[SAY] Leadership can trust ninety-one point eight eight percent because I refused to guess on three percent of orders. An honest number is more valuable than a precise wrong one.
+[SHOW] Close all files, return to terminal or blank slide
