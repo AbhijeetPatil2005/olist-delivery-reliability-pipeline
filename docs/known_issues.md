@@ -168,3 +168,15 @@ VALIDATION FAILED: Could not load all required tables
 
 ---
 **Verified:** 2026-09-25 | Test: Removed `olist_orders_dataset.csv`, ran `python run_pipeline.py`
+### Tested Failure Scenario: Duplicated Order Item
+
+When a row in olist_order_items_dataset.csv was artificially duplicated to test data integrity handling:
+
+**Behavior Analysis:**
+- The pipeline ran to completion successfully without throwing any errors or warnings.
+- Final metric outcomes (91.88% on-time) and row counts remained exactly the same as a clean run.
+
+**Conclusion:** The pipeline currently lacks a primary-key uniqueness validation rule for order_items. While this did not corrupt the high-level delivery metrics (which rely on the orders table), it silently accepts duplicate items. This is a known limitation that should be fixed before extending the pipeline to item-level metrics (e.g., item volume or product-specific delays).
+
+---
+**Verified:** 2026-09-25 | Test: Duplicated first data row in olist_order_items_dataset.csv, ran python run_pipeline.py
